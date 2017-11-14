@@ -5,4 +5,6 @@ class Company < ApplicationRecord
   validates_length_of :name, maximum: 255, minimum: 2
   validates_inclusion_of :plan_level, in: ["legacy", "custom", "basic", "plus", "growth", "enterprise"]
   validates_presence_of :plan_level
+
+  has_many :lessons
 end
