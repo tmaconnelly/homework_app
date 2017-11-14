@@ -7,4 +7,8 @@ class Company < ApplicationRecord
   validates_presence_of :plan_level
 
   has_many :lessons
+
+  scope :alphabetical, lambda {
+    order("name asc")
+  }
 end
