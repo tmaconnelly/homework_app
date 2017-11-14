@@ -55,4 +55,19 @@ RSpec.describe CompaniesController, type: :controller do
       expect(ids.include?(company1.id)).to eq(false)
     end
   end
+
+  describe "created_last_month" do
+    before do
+      company.created_at = company.created_at - 1.month
+      company.save!
+    end
+    it "returns only companies that were created in the prior month" do
+      get :created_last_month
+      data = JSON.parse(response.body)
+      ids = data["data"].map!{|d| d["id"]}
+      expect(data["data"].length).not_to eq(Company.count)
+      expect(ids.include?(company.id)).to eq(true)
+      expect(ids.include?(company2.id)).to eq(false)
+    end
+  end
 end

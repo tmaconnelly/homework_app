@@ -22,4 +22,9 @@ class Company < ApplicationRecord
   scope :not_trialing, lambda {
     where("trial_status IS NULL OR trial_status < ?", Time.zone.now)
   }
+
+  scope :created_last_month, lambda {
+    last_month = Time.zone.now - 1.month
+    where("created_at BETWEEN ? AND ?", last_month.at_beginning_of_month, last_month.at_end_of_month)
+  }
 end

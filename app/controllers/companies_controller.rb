@@ -14,4 +14,8 @@ class CompaniesController < ApplicationController
   def not_trialing
     render json: { data: Company.not_trialing }
   end
+
+  def created_last_month
+    render json: { data: Company.created_last_month }
+  end
 end
