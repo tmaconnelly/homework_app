@@ -2,9 +2,10 @@ require 'rails_helper'
 
 RSpec.describe CompaniesController, type: :controller do
 
-  company = Company.create!(name: 'ab', plan_level: 'basic', trial_status: Time.zone.now)
-  company1 = Company.create!(name: 'bc', plan_level: 'legacy', trial_status: Time.zone.now)
-  company2 =  Company.create!(name: 'cd', plan_level: 'custom', trial_status: Time.zone.now)
+  company = Company.create!(name: 'ab', plan_level: 'basic', trial_status: Time.zone.now + 1.month)
+  company1 = Company.create!(name: 'bc', plan_level: 'legacy', trial_status: Time.zone.now + 2.months)
+  company2 =  Company.create!(name: 'cd', plan_level: 'custom', trial_status: Time.zone.now - 3.months)
+  company3 =  Company.create!(name: 'fff', plan_level: 'custom', trial_status: nil)
 
   describe "#index" do
     it "returns all companies" do
@@ -31,7 +32,7 @@ RSpec.describe CompaniesController, type: :controller do
   end
 
   describe "#with_modern_plan" do
-    it "returns all plans with a modern plan level" do
+    it "returns all companies with a modern plan level" do
       get :with_modern_plan
       data = JSON.parse(response.body)
       plan_levels = data["data"].map!{|d| d["plan_level"]}
@@ -39,6 +40,19 @@ RSpec.describe CompaniesController, type: :controller do
       plan_levels.each do |pl|
         expect(Company::MODERN_PLANS.include?(pl)).to eq(true)
       end
+    end
+  end
+
+  describe "#not_trialing" do
+    it "returns companies that don't have an active trial" do
+      get :not_trialing
+      data = JSON.parse(response.body)
+      ids = data["data"].map!{|d| d["id"]}
+      expect(data["data"].length).not_to eq(Company.count)
+      expect(ids.include?(company2.id)).to eq(true)
+      expect(ids.include?(company3.id)).to eq(true)
+      expect(ids.include?(company.id)).to eq(false)
+      expect(ids.include?(company1.id)).to eq(false)
     end
   end
 end

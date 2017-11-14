@@ -18,4 +18,8 @@ class Company < ApplicationRecord
   scope :with_modern_plan, lambda {
     where(plan_level: MODERN_PLANS)
   }
+
+  scope :not_trialing, lambda {
+    where("trial_status IS NULL OR trial_status < ?", Time.zone.now)
+  }
 end

@@ -10,4 +10,8 @@ class CompaniesController < ApplicationController
   def with_modern_plan
     render json: { data: Company.with_modern_plan }
   end
+
+  def not_trialing
+    render json: { data: Company.not_trialing }
+  end
 end
